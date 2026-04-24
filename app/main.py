@@ -1,13 +1,40 @@
-from fastapi import FastAPI
-import uvicorn
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+import models, schemas, crud
+from database import SessionLocal, engine
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
 
+@app.post("/movies/", response_model=schemas.MovieResponse)
+def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
+    return crud.insert_movie(db=db, movie=movie)
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+@app.get("/movies/", response_model=list[schemas.MovieResponse])
+def read_movies(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    movies = crud.select_all_movies(db, skip=skip, limit=limit)
+    return movies
+
+@app.get("/movies/{movie_id}", response_model=schemas.MovieResponse)
+def read_movie(movie_id: int, db: Session = Depends(get_db)):
+    db_movie = crud.select_one_movie(db, movie_id=movie_id)
+    if db_movie is None:
+        raise HTTPException(status_code=404, detail="Filme não encontrado")
+    return db_movie
+
+@app.delete("/movies/{movie_id}")
+def delete_movie(movie_id: int, db: Session = Depends(get_db)):
+    success = crud.delete_movie(db, movie_id=movie_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Filme não encontrado para deletar")
+    return {"message": "Filme removido com sucesso"}
