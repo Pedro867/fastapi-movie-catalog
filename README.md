@@ -23,6 +23,13 @@ Este projeto foi refatorado para seguir os padrões da indústria e atingir o **
 - **Transações Seguras:** Camada de banco de dados (CRUD) isolada e blindada com tratamento de exceções (`try...except` com `db.rollback()`), garantindo a integridade da sessão do SQLAlchemy.
 
 ## 🛠️ Stack e Bibliotecas Principais
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=for-the-badge&logo=pydantic&logoColor=white)
+![Uvicorn](https://img.shields.io/badge/uvicorn-2094F3?style=for-the-badge&logo=python&logoColor=white)
+![RESTful](https://img.shields.io/badge/RESTful-Level_2-green?style=for-the-badge)
 
 - **Linguagem:** Python 3.14.0
 - **Framework Web:** FastAPI 0.136.0
