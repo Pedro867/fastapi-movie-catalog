@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 
 import models, schemas, crud
@@ -40,12 +40,13 @@ def read_movie(movie_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/movies/", status_code=status.HTTP_201_CREATED, response_model=schemas.StandardResponse)
-def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
+def create_movie(movie: schemas.MovieCreate, response: Response, db: Session = Depends(get_db)):
     retorno = crud.insert_movie(db=db, movie=movie)
 
     if retorno['status'] == 'erro':
         raise HTTPException(status_code=500, detail=retorno['msg'])
 
+    response.headers["Location"] = f"/movies/{retorno['id']}"
     return retorno
 
 
