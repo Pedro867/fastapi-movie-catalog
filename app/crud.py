@@ -4,11 +4,21 @@ import models, schemas
 
 
 def select_one_movie(db: Session, movie_id: int):
-    return db.query(models.Movie).filter(models.Movie.id == movie_id).first()
+    db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
+
+    if db_movie:
+        return {'status': 'ok', 'data': db_movie}
+
+    return {'status': 'empty', 'msg': 'Filme não encontrado'}
 
 
 def select_all_movies(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(models.Movie).offset(skip).limit(limit).all()
+    list_movies = db.query(models.Movie).offset(skip).limit(limit).all()
+
+    if movies:
+        return {'status': 'ok', 'data': list_movies}
+
+    return {'status': 'empty', 'msg': 'Nenhum filme encontrado'}
 
 
 def insert_movie(db: Session, movie: schemas.MovieCreate):

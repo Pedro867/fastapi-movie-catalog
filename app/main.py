@@ -16,18 +16,24 @@ def get_db():
         db.close()
 
 
-@app.get("/movies/", response_model=list[schemas.MovieResponse])
+@app.get("/movies/", response_model=schemas.StandardResponse[list[schemas.MovieResponse]])
 def read_movies(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    movies = crud.select_all_movies(db, skip=skip, limit=limit)
-    return movies
+    retorno = crud.select_all_movies(db, skip=skip, limit=limit)
+
+    if retorno['status'] == 'empty':
+        return {'status': 'ok', 'data': []}
+
+    return retorno
 
 
-@app.get("/movies/{movie_id}", response_model=schemas.MovieResponse)
+@app.get("/movies/{movie_id}", response_model=schemas.StandardResponse[schemas.MovieResponse])
 def read_movie(movie_id: int, db: Session = Depends(get_db)):
-    db_movie = crud.select_one_movie(db, movie_id=movie_id)
-    if db_movie is None:
-        raise HTTPException(status_code=404, detail="Filme não encontrado")
-    return db_movie
+    retorno = crud.select_one_movie(db, movie_id=movie_id)
+
+    if retorno['status'] == 'empty':
+        raise HTTPException(status_code=404, detail=retorno['msg'])
+
+    return retorno
 
 
 @app.post("/movies/", status_code=status.HTTP_201_CREATED)
