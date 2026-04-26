@@ -1,13 +1,26 @@
-# Catálogo de Filmes (Movie Catalog API)
+# Catálogo de Filmes (Movie Catalog API) - RESTful Nível 2
 
-Uma API desenvolvida em FastAPI para gerenciar um catálogo de filmes. O projeto permite realizar operações de CRUD (Criar, Ler e Deletar) de filmes em um banco de dados relacional.
+Uma API robusta desenvolvida em FastAPI para gerenciar um catálogo de filmes. Este projeto foi construído com um foco profundo em **arquitetura de software** e boas práticas de **design de APIs RESTful**, servindo como base de aprendizado avançado para a criação de APIs modernas em qualquer linguagem (como Node.js, Go, etc).
 
 ## 🚀 Funcionalidades
 
-- Listar todos os filmes
-- Buscar um filme específico pelo ID
-- Adicionar um novo filme ao catálogo
-- Remover um filme do catálogo
+- **CRUD Completo:** Listar (todos e por ID), Adicionar, Substituir (Total), Atualizar (Parcial) e Remover filmes.
+- **Respostas Envelopadas:** Todas as rotas seguem um contrato estrito de resposta JSON usando um Schema Genérico do Pydantic (`StandardResponse`).
+- **Paginação:** Suporte integrado a paginação nas listagens.
+
+## 🏛️ Destaques da Arquitetura RESTful
+
+Este projeto foi refatorado para seguir os padrões da indústria e atingir o **Modelo de Maturidade de Richardson (Nível 2)**:
+- **Design de Recursos:** URIs construídas exclusivamente com substantivos (`/movies/`).
+- **Semântica de Verbos HTTP:**
+  - `GET` para leitura sem efeitos colaterais.
+  - `POST` para criação de recursos.
+  - `PUT` para atualização integral do recurso.
+  - `PATCH` para atualização parcial (recebendo chaves dinâmicas).
+  - `DELETE` para exclusões.
+- **Status Codes Precisos:** Retornos semânticos como `201 Created` para inserções, `200 OK` para sucesso, `404 Not Found` para ausência de recursos e `500 Internal Server Error`.
+- **Cabeçalho Location:** Respostas de POST informam ativamente a URI do recurso recém-criado nos *headers* HTTP.
+- **Transações Seguras:** Camada de banco de dados (CRUD) isolada e blindada com tratamento de exceções (`try...except` com `db.rollback()`), garantindo a integridade da sessão do SQLAlchemy.
 
 ## 🛠️ Stack e Bibliotecas Principais
 
@@ -36,7 +49,7 @@ DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco"
 
 Siga os passos abaixo para rodar o projeto localmente:
 
-1. **Clone o repositório e acesse a pasta**
+1. **Clone o repositório e acesse a pasta do projeto.**
 
 2. **Crie e ative um ambiente virtual:**
    ```bash
@@ -66,25 +79,27 @@ Siga os passos abaixo para rodar o projeto localmente:
 
 ## 🛤️ Endpoints da API
 
-Aqui estão as rotas disponíveis na aplicação:
+A API expõe o recurso `/movies` aplicando rigidamente a semântica REST:
 
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| `GET` | `/movies/` | Retorna a lista de todos os filmes. Suporta paginação (`skip`, `limit`). |
-| `POST` | `/movies/` | Adiciona um novo filme. |
-| `GET` | `/movies/{movie_id}`| Retorna os detalhes de um filme específico. |
-| `DELETE`| `/movies/{movie_id}`| Remove um filme pelo seu ID. |
+| Método   | Rota                 | Status HTTP | Descrição |
+|----------|----------------------|-------------|-----------|
+| `GET`    | `/movies/`           | `200 OK`    | Retorna a lista padronizada de filmes (`data: [...]`). |
+| `POST`   | `/movies/`           | `201 Created`| Cria um novo filme e retorna a URI no Header `Location`. |
+| `GET`    | `/movies/{movie_id}` | `200 OK`    | Retorna os detalhes encapsulados de um filme. |
+| `PUT`    | `/movies/{movie_id}` | `200 OK`    | Substitui completamente os dados de um filme. |
+| `PATCH`  | `/movies/{movie_id}` | `200 OK`    | Atualiza parcialmente os dados do filme (JSON flexível). |
+| `DELETE` | `/movies/{movie_id}` | `200 OK`    | Remove um filme pelo seu ID. |
 
 ## 📁 Estrutura do Projeto
 
 ```text
 Filmes/
 ├── app/
-│   ├── main.py        # Ponto de entrada da aplicação e rotas
+│   ├── main.py        # Ponto de entrada, Rotas REST e Definição de Status HTTP
 │   ├── database.py    # Configuração de conexão com o banco de dados
-│   ├── models.py      # Modelos do SQLAlchemy (Tabelas do banco)
-│   ├── schemas.py     # Modelos do Pydantic (Validação de entrada/saída)
-│   └── crud.py        # Funções para interagir com o banco de dados
+│   ├── models.py      # Modelos do SQLAlchemy (Tabelas do PostgreSQL)
+│   ├── schemas.py     # Modelos do Pydantic (Generic Types e StandardResponse)
+│   └── crud.py        # Isolamento da Regra de Negócio e Transações DB
 ├── tests/             # Diretório de testes
 ├── .env               # Variáveis de ambiente (não versionado)
 ├── requirements.txt   # Dependências do projeto
