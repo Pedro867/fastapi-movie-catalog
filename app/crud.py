@@ -84,6 +84,33 @@ def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate):
     }
 
 
+def patch_movie(db: Session, movie_id: int, movie: schemas.MoviePatch):
+    db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
+    if db_movie:
+        # Pega apenas os campos que foram de fato enviados pelo usuário (ignora os nulos implícitos)
+        update_data = movie.dict(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(db_movie, key, value)
+        try:
+            db.commit()
+            db.refresh(db_movie)
+            return {
+                'status': 'ok',
+                'msg'   : 'Filme atualizado parcialmente com sucesso.',
+                'id'    : db_movie.id
+            }
+        except SQLAlchemyError as e:
+            db.rollback()
+            return {
+                'status': 'erro',
+                'msg'   : 'Erro ao atualizar filme.'
+            }
+    return {
+        'status': 'empty',
+        'msg'   : 'Filme não encontrado.'
+    }
+
+
 def delete_movie(db: Session, movie_id: int):
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
     if db_movie:

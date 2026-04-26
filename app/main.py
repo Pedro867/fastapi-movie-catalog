@@ -63,6 +63,19 @@ def update_movie(movie_id: int, movie: schemas.MovieUpdate, db: Session = Depend
     return retorno
 
 
+@app.patch("/movies/{movie_id}", status_code=status.HTTP_200_OK, response_model=schemas.StandardResponse)
+def patch_movie(movie_id: int, movie: schemas.MoviePatch, db: Session = Depends(get_db)):
+    retorno = crud.patch_movie(db, movie_id=movie_id, movie=movie)
+
+    if retorno['status'] == 'empty':
+        raise HTTPException(status_code=404, detail=retorno['msg'])
+
+    if retorno['status'] == 'erro':
+        raise HTTPException(status_code=500, detail=retorno['msg'])
+
+    return retorno
+
+
 @app.delete("/movies/{movie_id}", status_code=status.HTTP_200_OK, response_model=schemas.StandardResponse)
 def delete_movie(movie_id: int, db: Session = Depends(get_db)):
     retorno = crud.delete_movie(db, movie_id=movie_id)

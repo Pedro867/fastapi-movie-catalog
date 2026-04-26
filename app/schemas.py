@@ -21,6 +21,12 @@ class MovieUpdate(MovieBase):
     class Config:
         from_attributes = True
 
+class MoviePatch(BaseModel):
+    titulo        : Optional[str] = None
+    diretor       : Optional[str] = None
+    ano_lancamento: Optional[int] = None
+    genero        : Optional[str] = None
+
 class StandardResponse(BaseModel, Generic[T]):
     status : str
     msg    : Optional[str] = None
