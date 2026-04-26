@@ -1,4 +1,4 @@
-# Catálogo de Filmes (Movie Catalog API) - RESTful Nível 2
+# FastAPI Movie Catalog - RESTful Nível 2
 
 Uma API robusta desenvolvida em FastAPI para gerenciar um catálogo de filmes. Este projeto foi construído com um foco profundo em **arquitetura de software** e boas práticas de **design de APIs RESTful**, servindo como base de aprendizado avançado para a criação de APIs modernas em qualquer linguagem (como Node.js, Go, etc).
 
@@ -93,7 +93,7 @@ A API expõe o recurso `/movies` aplicando rigidamente a semântica REST:
 ## 📁 Estrutura do Projeto
 
 ```text
-Filmes/
+fastapi-movie-catalog/
 ├── app/
 │   ├── main.py        # Ponto de entrada, Rotas REST e Definição de Status HTTP
 │   ├── database.py    # Configuração de conexão com o banco de dados
