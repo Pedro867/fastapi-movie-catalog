@@ -23,6 +23,18 @@ def insert_movie(db: Session, movie: schemas.MovieCreate):
     return db_movie
 
 
+def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate):
+    db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
+    if db_movie:
+        db_movie.titulo = movie.titulo
+        db_movie.diretor = movie.diretor
+        db_movie.ano_lancamento = movie.ano_lancamento
+        db_movie.genero = movie.genero
+        db.commit()
+        return True
+    return False
+
+
 def delete_movie(db: Session, movie_id: int):
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
     if db_movie:

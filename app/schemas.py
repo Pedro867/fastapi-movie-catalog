@@ -12,5 +12,8 @@ class MovieCreate(MovieBase):
 class MovieResponse(MovieBase):
     id: int
 
+class MovieUpdate(MovieBase):
+    pass
+
     class Config:
         from_attributes = True
