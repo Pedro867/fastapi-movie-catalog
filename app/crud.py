@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 import models, schemas
 
 
@@ -41,9 +42,24 @@ def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate):
         db_movie.diretor = movie.diretor
         db_movie.ano_lancamento = movie.ano_lancamento
         db_movie.genero = movie.genero
-        db.commit()
-        return True
-    return False
+        try:
+            db.commit()
+            db.refresh(db_movie)
+            return {
+                'status': 'ok',
+                'msg'   : 'Filme atualizado com sucesso.',
+                'id'    : db_movie.id
+            }
+        except SQLAlchemyError as e:
+            db.rollback()
+            return {
+                'status': 'erro',
+                'msg'   : 'Erro ao atualizar filme.'
+            }
+    return {
+        'status': 'empty',
+        'msg'   : 'Filme não encontrado.'
+    }
 
 
 def delete_movie(db: Session, movie_id: int):

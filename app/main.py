@@ -16,16 +16,6 @@ def get_db():
         db.close()
 
 
-@app.post("/movies/", status_code=status.HTTP_201_CREATED)
-def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
-    retorno = crud.insert_movie(db=db, movie=movie)
-
-    if retorno['status'] != 'ok':
-        raise HTTPException(status_code=500, detail=retorno['msg'])
-
-    return retorno
-
-
 @app.get("/movies/", response_model=list[schemas.MovieResponse])
 def read_movies(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     movies = crud.select_all_movies(db, skip=skip, limit=limit)
@@ -40,13 +30,27 @@ def read_movie(movie_id: int, db: Session = Depends(get_db)):
     return db_movie
 
 
+@app.post("/movies/", status_code=status.HTTP_201_CREATED)
+def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
+    retorno = crud.insert_movie(db=db, movie=movie)
+
+    if retorno['status'] == 'erro':
+        raise HTTPException(status_code=500, detail=retorno['msg'])
+
+    return retorno
+
+
 @app.put("/movies/{movie_id}")
 def update_movie(movie_id: int, movie: schemas.MovieUpdate, db: Session = Depends(get_db)):
-    print(movie_id)
-    success = crud.update_movie(db, movie_id=movie_id, movie=movie)
-    if not success:
-        raise HTTPException(status_code=404, detail="Filme não encontrado")
-    return {"message": "Filme atualizado com sucesso"}
+    retorno = crud.update_movie(db, movie_id=movie_id, movie=movie)
+
+    if retorno['status'] == 'empty':
+        raise HTTPException(status_code=404, detail=retorno['msg'])
+
+    if retorno['status'] == 'erro':
+        raise HTTPException(status_code=500, detail=retorno['msg'])
+
+    return retorno
 
 
 @app.delete("/movies/{movie_id}")
