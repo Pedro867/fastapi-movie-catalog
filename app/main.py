@@ -55,7 +55,12 @@ def update_movie(movie_id: int, movie: schemas.MovieUpdate, db: Session = Depend
 
 @app.delete("/movies/{movie_id}")
 def delete_movie(movie_id: int, db: Session = Depends(get_db)):
-    success = crud.delete_movie(db, movie_id=movie_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Filme não encontrado para deletar")
-    return {"message": "Filme removido com sucesso"}
+    retorno = crud.delete_movie(db, movie_id=movie_id)
+
+    if retorno['status'] == 'empty':
+        raise HTTPException(status_code=404, detail=retorno['msg'])
+
+    if retorno['status'] == 'erro':
+        raise HTTPException(status_code=500, detail=retorno['msg'])
+
+    return retorno

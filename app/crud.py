@@ -65,7 +65,21 @@ def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate):
 def delete_movie(db: Session, movie_id: int):
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
     if db_movie:
-        db.delete(db_movie)
-        db.commit()
-        return True
-    return False
+        try:
+            db.delete(db_movie)
+            db.commit()
+            return {
+                'status': 'ok',
+                'msg'   : 'Filme removido com sucesso.',
+                'id'    : movie_id
+            }
+        except SQLAlchemyError as e:
+            db.rollback()
+            return {
+                'status': 'erro',
+                'msg'   : 'Erro ao deletar filme.'
+            }
+    return {
+        'status': 'empty',
+        'msg'   : 'Filme não encontrado.'
+    }
