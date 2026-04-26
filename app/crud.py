@@ -21,7 +21,7 @@ def select_one_movie(db: Session, movie_id: int):
 def select_all_movies(db: Session, skip: int = 0, limit: int = 10):
     list_movies = db.query(models.Movie).offset(skip).limit(limit).all()
 
-    if movies:
+    if list_movies:
         return {
             'status': 'ok',
             'data'  : list_movies

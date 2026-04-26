@@ -39,7 +39,7 @@ def read_movie(movie_id: int, db: Session = Depends(get_db)):
     return retorno
 
 
-@app.post("/movies/", status_code=status.HTTP_201_CREATED)
+@app.post("/movies/", status_code=status.HTTP_201_CREATED, response_model=schemas.StandardResponse)
 def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
     retorno = crud.insert_movie(db=db, movie=movie)
 
@@ -49,7 +49,7 @@ def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
     return retorno
 
 
-@app.put("/movies/{movie_id}")
+@app.put("/movies/{movie_id}", response_model=schemas.StandardResponse)
 def update_movie(movie_id: int, movie: schemas.MovieUpdate, db: Session = Depends(get_db)):
     retorno = crud.update_movie(db, movie_id=movie_id, movie=movie)
 
@@ -62,7 +62,7 @@ def update_movie(movie_id: int, movie: schemas.MovieUpdate, db: Session = Depend
     return retorno
 
 
-@app.delete("/movies/{movie_id}")
+@app.delete("/movies/{movie_id}", response_model=schemas.StandardResponse)
 def delete_movie(movie_id: int, db: Session = Depends(get_db)):
     retorno = crud.delete_movie(db, movie_id=movie_id)
 
