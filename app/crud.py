@@ -18,9 +18,20 @@ def insert_movie(db: Session, movie: schemas.MovieCreate):
         genero=movie.genero
     )
     db.add(db_movie)
-    db.commit()
-    db.refresh(db_movie)
-    return db_movie
+    try:
+        db.commit()
+        db.refresh(db_movie)
+        return {
+            'status': 'ok',
+            'msg'   : 'Filme inserido com sucesso.',
+            'id'    : db_movie.id
+        }
+    except SQLAlchemyError as e:
+        db.rollback()
+        return {
+            'status': 'erro',
+            'msg'   : 'Erro ao inserir filme.'
+        }
 
 
 def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate):
