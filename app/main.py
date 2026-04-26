@@ -21,7 +21,10 @@ def read_movies(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     retorno = crud.select_all_movies(db, skip=skip, limit=limit)
 
     if retorno['status'] == 'empty':
-        return {'status': 'ok', 'data': []}
+        return {
+            'status': 'ok',
+            'data'  : []
+        }
 
     return retorno
 

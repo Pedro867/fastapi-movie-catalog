@@ -7,18 +7,30 @@ def select_one_movie(db: Session, movie_id: int):
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
 
     if db_movie:
-        return {'status': 'ok', 'data': db_movie}
+        return {
+            'status': 'ok',
+            'data'  : db_movie
+        }
 
-    return {'status': 'empty', 'msg': 'Filme não encontrado'}
+    return {
+        'status': 'empty',
+        'msg'   : 'Filme não encontrado'
+    }
 
 
 def select_all_movies(db: Session, skip: int = 0, limit: int = 10):
     list_movies = db.query(models.Movie).offset(skip).limit(limit).all()
 
     if movies:
-        return {'status': 'ok', 'data': list_movies}
+        return {
+            'status': 'ok',
+            'data'  : list_movies
+        }
 
-    return {'status': 'empty', 'msg': 'Nenhum filme encontrado'}
+    return {
+        'status': 'empty',
+        'msg'   : 'Nenhum filme encontrado'
+    }
 
 
 def insert_movie(db: Session, movie: schemas.MovieCreate):
