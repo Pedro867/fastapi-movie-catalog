@@ -97,6 +97,23 @@ A API expõe o recurso `/movies` aplicando rigidamente a semântica REST:
 | `PATCH`  | `/movies/{movie_id}` | `200 OK`    | Atualiza parcialmente os dados do filme (JSON flexível). |
 | `DELETE` | `/movies/{movie_id}` | `200 OK`    | Remove um filme pelo seu ID. |
 
+## 🧪 Testes
+
+O projeto conta com uma suíte de testes automatizados utilizando `pytest` e `TestClient` do FastAPI. Eles utilizam um banco de dados SQLite temporário para garantir que os testes rodem rapidamente e de forma isolada, sem afetar o banco de desenvolvimento.
+
+Para executar os testes, a partir do diretório raiz do projeto, execute o comando:
+
+```bash
+pytest
+```
+
+Os testes cobrem:
+- **Criação** (POST) e validação de schemas Pydantic.
+- **Listagem** e leitura de itens específicos (GET).
+- **Atualização** (PUT).
+- **Remoção** (DELETE).
+- **Tratamento de Erros**, validando o retorno de Status Codes apropriados (ex: `404 Not Found` ao buscar um ID inexistente).
+
 ## 📁 Estrutura do Projeto
 
 ```text
