@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-import models, schemas
+from app import models, schemas
 
 
 def select_one_movie(db: Session, movie_id: int):
