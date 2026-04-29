@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app import models, schemas
 
 
-def select_one_movie(db: Session, movie_id: int):
+def select_one_movie(db: Session, movie_id: int) -> dict:
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
 
     if db_movie:
@@ -18,7 +18,7 @@ def select_one_movie(db: Session, movie_id: int):
     }
 
 
-def select_all_movies(db: Session, skip: int = 0, limit: int = 10):
+def select_all_movies(db: Session, skip: int = 0, limit: int = 10) -> dict:
     list_movies = db.query(models.Movie).offset(skip).limit(limit).all()
 
     if list_movies:
@@ -33,7 +33,7 @@ def select_all_movies(db: Session, skip: int = 0, limit: int = 10):
     }
 
 
-def insert_movie(db: Session, movie: schemas.MovieCreate):
+def insert_movie(db: Session, movie: schemas.MovieCreate) -> dict:
     db_movie = models.Movie(
         titulo=movie.titulo,
         diretor=movie.diretor,
@@ -57,7 +57,7 @@ def insert_movie(db: Session, movie: schemas.MovieCreate):
         }
 
 
-def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate):
+def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate) -> dict:
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
     if db_movie:
         db_movie.titulo = movie.titulo
@@ -84,7 +84,7 @@ def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate):
     }
 
 
-def patch_movie(db: Session, movie_id: int, movie: schemas.MoviePatch):
+def patch_movie(db: Session, movie_id: int, movie: schemas.MoviePatch) -> dict:
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
     if db_movie:
         # Pega apenas os campos que foram de fato enviados pelo usuário (ignora os nulos implícitos)
@@ -111,7 +111,7 @@ def patch_movie(db: Session, movie_id: int, movie: schemas.MoviePatch):
     }
 
 
-def delete_movie(db: Session, movie_id: int):
+def delete_movie(db: Session, movie_id: int) -> dict:
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
     if db_movie:
         try:
