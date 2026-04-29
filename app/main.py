@@ -8,7 +8,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-def get_db():
+def get_db(): # pragma: no cover
     db = SessionLocal()
     try:
         yield db

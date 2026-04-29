@@ -146,3 +146,38 @@ def test_delete_internal_error():
 
         assert response.status_code      == 500
         assert response.json()["detail"] == "Erro interno no banco de dados"
+
+
+def test_update_movie_patch():
+    create_res = client.post("/movies/", json={"titulo": "Old Title", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
+    movie_id   = create_res.json()["id"]
+
+    patch_payload = {"titulo": "Patched Title"}
+    response      = client.patch(f"/movies/{movie_id}", json=patch_payload)
+
+    assert response.status_code == 200
+
+    check = client.get(f"/movies/{movie_id}")
+    assert check.json()["data"]["titulo"]  == "Patched Title"
+    assert check.json()["data"]["diretor"] == "D1"
+
+
+def test_update_patch_non_existent_movie():
+    response = client.patch("/movies/9999", json={"titulo": "New Title"})
+    assert response.status_code == 404
+
+
+def test_update_patch_internal_error():
+    error_mock = {
+        'status': 'erro',
+        'msg'   : 'Erro interno no banco de dados'
+    }
+
+    with patch("app.crud.patch_movie", return_value=error_mock):
+        response = client.patch(
+            "/movies/9999",
+            json={"titulo": "Erro"}
+        )
+
+        assert response.status_code      == 500
+        assert response.json()["detail"] == "Erro interno no banco de dados"
