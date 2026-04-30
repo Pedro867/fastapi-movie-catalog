@@ -28,6 +28,7 @@ def test_full_movie_lifecycle(client):
     assert response.status_code == 200
     all_movies = response.json()["data"]
     assert any(m["id"] == movie_id for m in all_movies)
+    assert isinstance(all_movies, list)
 
     response = client.put(f"/movies/{movie_id}", json={
         "titulo"         : "Integration Test Movie - Updated",
@@ -56,6 +57,26 @@ def test_full_movie_lifecycle(client):
     assert movie_data["ano_lancamento"] == 2026
 
     response = client.delete(f"/movies/{movie_id}")
-    assert response.status_code == 200
+    assert response.status_code         == 200
+
     response = client.get(f"/movies/{movie_id}")
+    assert response.status_code         == 404
+
+    response = client.post("/movies/", json={
+        "titulo": "Filme Inválido",
+        "diretor": "John Doe",
+        "ano_lancamento": "dois mil e vinte cinco",
+        "genero": "Testing"
+    })
+    assert response.status_code == 422
+
+    response = client.get("/movies/999999")
+    assert response.status_code == 404
+
+    response = client.put("/movies/999999", json={
+        "titulo": "Não Existente",
+        "diretor": "Ninguém",
+        "ano_lancamento": 2025,
+        "genero": "Nenhum"
+    })
     assert response.status_code == 404
