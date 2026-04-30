@@ -1,5 +1,5 @@
 from typing import Optional, Generic, TypeVar
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 T = TypeVar('T')
 
@@ -18,8 +18,7 @@ class MovieResponse(MovieBase):
 class MovieUpdate(MovieBase):
     pass
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class MoviePatch(BaseModel):
     titulo        : Optional[str] = None

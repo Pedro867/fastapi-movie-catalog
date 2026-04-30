@@ -88,7 +88,7 @@ def patch_movie(db: Session, movie_id: int, movie: schemas.MoviePatch) -> dict:
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
     if db_movie:
         # Pega apenas os campos que foram de fato enviados pelo usuário (ignora os nulos implícitos)
-        update_data = movie.dict(exclude_unset=True)
+        update_data = movie.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_movie, key, value)
         try:
