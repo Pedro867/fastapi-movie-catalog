@@ -99,7 +99,7 @@ A API expõe o recurso `/movies` aplicando rigidamente a semântica REST:
 
 ## 🧪 Testes
 
-O projeto conta com uma suíte de testes automatizados utilizando `pytest` e `TestClient` do FastAPI. Eles utilizam um banco de dados SQLite temporário para garantir que os testes rodem rapidamente e de forma isolada, sem afetar o banco de desenvolvimento.
+O projeto conta com uma suíte de testes automatizados utilizando `pytest` e `TestClient` do FastAPI, alcançando a marca de **100% de coverage de testes unitários**. Eles utilizam um banco de dados SQLite temporário para garantir que os testes rodem rapidamente e de forma isolada, sem afetar o banco de desenvolvimento.
 
 Para executar os testes, a partir do diretório raiz do projeto, execute o comando:
 
