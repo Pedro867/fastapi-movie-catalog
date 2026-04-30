@@ -7,7 +7,7 @@ from app.database import Base
 from app.main import app, get_db
 
 # Configuração do Banco de Dados de Teste (Em memória)
-SQLALCHEMY_DATABASE_URL = "sqlite:///./tests/test_db.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
