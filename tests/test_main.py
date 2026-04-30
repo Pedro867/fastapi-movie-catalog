@@ -5,7 +5,12 @@ from unittest.mock import patch
 def test_create_movie(client):
     response = client.post(
         "/movies/",
-        json={"titulo": "Inception", "diretor": "Christopher Nolan", "ano_lancamento": 2010, "genero": "Ficção Científica"}
+        json={
+            "titulo"         : "Inception",
+            "diretor"        : "Christopher Nolan",
+            "ano_lancamento" : 2010,
+            "genero"         : "Ficção Científica"
+        }
     )
     assert response.status_code      == 201
     assert response.json()["status"] == "ok"
@@ -21,7 +26,12 @@ def test_create_movie_internal_error(client):
     with patch("app.crud.insert_movie", return_value=error_mock):
         response = client.post(
             "/movies/",
-            json={"titulo": "Erro", "diretor": "D1", "ano_lancamento": 2024, "genero": "G1"}
+            json={
+                "titulo"         : "Erro",
+                "diretor"        : "D1",
+                "ano_lancamento" : 2024,
+                "genero"         : "G1"
+            }
         )
 
         assert response.status_code      == 500
@@ -29,8 +39,13 @@ def test_create_movie_internal_error(client):
 
 
 def test_read_one_movie(client):
-    create_res = client.post("/movies/", json={"titulo": "The Matrix", "diretor": "Wachowskis", "ano_lancamento": 1999, "genero": "Sci-Fi"})
-    movie_id   = create_res.json()["id"]
+    create_res = client.post("/movies/", json={
+        "titulo"         : "The Matrix",
+        "diretor"        : "Wachowskis",
+        "ano_lancamento" : 1999,
+        "genero"         : "Sci-Fi"
+    })
+    movie_id = create_res.json()["id"]
 
     response = client.get(f"/movies/{movie_id}")
     assert response.status_code              == 200
@@ -38,8 +53,18 @@ def test_read_one_movie(client):
 
 
 def test_read_all_movies(client):
-    client.post("/movies/", json={"titulo": "M1", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
-    client.post("/movies/", json={"titulo": "M2", "diretor": "D2", "ano_lancamento": 2001, "genero": "G2"})
+    client.post("/movies/", json={
+        "titulo"         : "M1",
+        "diretor"        : "D1",
+        "ano_lancamento" : 2000,
+        "genero"         : "G1"
+    })
+    client.post("/movies/", json={
+        "titulo"         : "M2",
+        "diretor"        : "D2",
+        "ano_lancamento" : 2001,
+        "genero"         : "G2"
+    })
 
     response = client.get("/movies/")
     assert response.status_code         == 200
@@ -58,10 +83,20 @@ def test_read_one_movie_not_found(client):
 
 
 def test_update_movie_put(client):
-    create_res = client.post("/movies/", json={"titulo": "Old Title", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
-    movie_id   = create_res.json()["id"]
+    create_res = client.post("/movies/", json={
+        "titulo"         : "Old Title",
+        "diretor"        : "D1",
+        "ano_lancamento" : 2000,
+        "genero"         : "G1"
+    })
+    movie_id = create_res.json()["id"]
 
-    update_payload = {"titulo": "New Title", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"}
+    update_payload = {
+        "titulo"         : "New Title",
+        "diretor"        : "D1",
+        "ano_lancamento" : 2000,
+        "genero"         : "G1"
+    }
     response       = client.put(f"/movies/{movie_id}", json=update_payload)
 
     assert response.status_code == 200
@@ -71,20 +106,30 @@ def test_update_movie_put(client):
 
 
 def test_update_put_non_existent_movie(client):
-    response = client.put("/movies/9999", json={"titulo": "New Title", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
+    response = client.put("/movies/9999", json={
+        "titulo"         : "New Title",
+        "diretor"        : "D1",
+        "ano_lancamento" : 2000,
+        "genero"         : "G1"
+    })
     assert response.status_code == 404
 
 
 def test_update_put_internal_error(client):
     error_mock = {
-        'status': 'erro',
-        'msg'   : 'Erro interno no banco de dados'
+        'status' : 'erro',
+        'msg'    : 'Erro interno no banco de dados'
     }
 
     with patch("app.crud.update_movie", return_value=error_mock):
         response = client.put(
             "/movies/9999",
-            json={"titulo": "Erro", "diretor": "D1", "ano_lancamento": 2024, "genero": "G1"}
+            json={
+                "titulo"         : "Erro",
+                "diretor"        : "D1",
+                "ano_lancamento" : 2024,
+                "genero"         : "G1"
+            }
         )
 
         assert response.status_code      == 500
@@ -92,7 +137,12 @@ def test_update_put_internal_error(client):
 
 
 def test_delete_movie(client):
-    create_res = client.post("/movies/", json={"titulo": "To Delete", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
+    create_res = client.post("/movies/", json={
+        "titulo"         : "To Delete",
+        "diretor"        : "D1",
+        "ano_lancamento" : 2000,
+        "genero"         : "G1"
+    })
     movie_id   = create_res.json()["id"]
 
     delete_res = client.delete(f"/movies/{movie_id}")
@@ -109,8 +159,8 @@ def test_delete_non_existent_movie(client):
 
 def test_delete_internal_error(client):
     error_mock = {
-        'status': 'erro',
-        'msg'   : 'Erro interno no banco de dados'
+        'status' : 'erro',
+        'msg'    : 'Erro interno no banco de dados'
     }
 
     with patch("app.crud.delete_movie", return_value=error_mock):
@@ -121,10 +171,15 @@ def test_delete_internal_error(client):
 
 
 def test_update_movie_patch(client):
-    create_res = client.post("/movies/", json={"titulo": "Old Title", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
+    create_res = client.post("/movies/", json={
+        "titulo"         : "Old Title",
+        "diretor"        : "D1",
+        "ano_lancamento" : 2000,
+        "genero"         : "G1"
+    })
     movie_id   = create_res.json()["id"]
 
-    patch_payload = {"titulo": "Patched Title"}
+    patch_payload = {"titulo" : "Patched Title"}
     response      = client.patch(f"/movies/{movie_id}", json=patch_payload)
 
     assert response.status_code == 200
@@ -135,20 +190,20 @@ def test_update_movie_patch(client):
 
 
 def test_update_patch_non_existent_movie(client):
-    response = client.patch("/movies/9999", json={"titulo": "New Title"})
+    response = client.patch("/movies/9999", json={"titulo" : "New Title"})
     assert response.status_code == 404
 
 
 def test_update_patch_internal_error(client):
     error_mock = {
-        'status': 'erro',
-        'msg'   : 'Erro interno no banco de dados'
+        'status' : 'erro',
+        'msg'    : 'Erro interno no banco de dados'
     }
 
     with patch("app.crud.patch_movie", return_value=error_mock):
         response = client.patch(
             "/movies/9999",
-            json={"titulo": "Erro"}
+            json={"titulo" : "Erro"}
         )
 
         assert response.status_code      == 500

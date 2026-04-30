@@ -4,10 +4,10 @@ from pydantic import BaseModel, ConfigDict
 T = TypeVar('T')
 
 class MovieBase(BaseModel):
-    titulo        : str
-    diretor       : str
-    ano_lancamento: int
-    genero        : str
+    titulo         : str
+    diretor        : str
+    ano_lancamento : int
+    genero         : str
 
 class MovieCreate(MovieBase):
     pass
@@ -21,10 +21,10 @@ class MovieUpdate(MovieBase):
     model_config = ConfigDict(from_attributes=True)
 
 class MoviePatch(BaseModel):
-    titulo        : Optional[str] = None
-    diretor       : Optional[str] = None
-    ano_lancamento: Optional[int] = None
-    genero        : Optional[str] = None
+    titulo         : Optional[str] = None
+    diretor        : Optional[str] = None
+    ano_lancamento : Optional[int] = None
+    genero         : Optional[str] = None
 
 class StandardResponse(BaseModel, Generic[T]):
     status : str

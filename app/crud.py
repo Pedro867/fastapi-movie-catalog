@@ -8,13 +8,13 @@ def select_one_movie(db: Session, movie_id: int) -> dict:
 
     if db_movie:
         return {
-            'status': 'ok',
-            'data'  : db_movie
+            'status' : 'ok',
+            'data'   : db_movie
         }
 
     return {
-        'status': 'empty',
-        'msg'   : 'Filme não encontrado'
+        'status' : 'empty',
+        'msg'    : 'Filme não encontrado'
     }
 
 
@@ -23,37 +23,37 @@ def select_all_movies(db: Session, skip: int = 0, limit: int = 10) -> dict:
 
     if list_movies:
         return {
-            'status': 'ok',
-            'data'  : list_movies
+            'status' : 'ok',
+            'data'   : list_movies
         }
 
     return {
-        'status': 'empty',
-        'msg'   : 'Nenhum filme encontrado'
+        'status' : 'empty',
+        'msg'    : 'Nenhum filme encontrado'
     }
 
 
 def insert_movie(db: Session, movie: schemas.MovieCreate) -> dict:
     db_movie = models.Movie(
-        titulo=movie.titulo,
-        diretor=movie.diretor,
-        ano_lancamento=movie.ano_lancamento,
-        genero=movie.genero
+        titulo         = movie.titulo,
+        diretor        = movie.diretor,
+        ano_lancamento = movie.ano_lancamento,
+        genero         = movie.genero
     )
     db.add(db_movie)
     try:
         db.commit()
         db.refresh(db_movie)
         return {
-            'status': 'ok',
-            'msg'   : 'Filme inserido com sucesso.',
-            'id'    : db_movie.id
+            'status' : 'ok',
+            'msg'    : 'Filme inserido com sucesso.',
+            'id'     : db_movie.id
         }
     except SQLAlchemyError as e:
         db.rollback()
         return {
-            'status': 'erro',
-            'msg'   : 'Erro ao inserir filme.'
+            'status' : 'erro',
+            'msg'    : 'Erro ao inserir filme.'
         }
 
 
@@ -68,19 +68,19 @@ def update_movie(db: Session, movie_id: int, movie: schemas.MovieUpdate) -> dict
             db.commit()
             db.refresh(db_movie)
             return {
-                'status': 'ok',
-                'msg'   : 'Filme atualizado com sucesso.',
-                'id'    : db_movie.id
+                'status' : 'ok',
+                'msg'    : 'Filme atualizado com sucesso.',
+                'id'     : db_movie.id
             }
         except SQLAlchemyError as e:
             db.rollback()
             return {
-                'status': 'erro',
-                'msg'   : 'Erro ao atualizar filme.'
+                'status' : 'erro',
+                'msg'    : 'Erro ao atualizar filme.'
             }
     return {
-        'status': 'empty',
-        'msg'   : 'Filme não encontrado.'
+        'status' : 'empty',
+        'msg'    : 'Filme não encontrado.'
     }
 
 
@@ -95,19 +95,19 @@ def patch_movie(db: Session, movie_id: int, movie: schemas.MoviePatch) -> dict:
             db.commit()
             db.refresh(db_movie)
             return {
-                'status': 'ok',
-                'msg'   : 'Filme atualizado parcialmente com sucesso.',
-                'id'    : db_movie.id
+                'status' : 'ok',
+                'msg'    : 'Filme atualizado parcialmente com sucesso.',
+                'id'     : db_movie.id
             }
         except SQLAlchemyError as e:
             db.rollback()
             return {
-                'status': 'erro',
-                'msg'   : 'Erro ao atualizar filme.'
+                'status' : 'erro',
+                'msg'    : 'Erro ao atualizar filme.'
             }
     return {
-        'status': 'empty',
-        'msg'   : 'Filme não encontrado.'
+        'status' : 'empty',
+        'msg'    : 'Filme não encontrado.'
     }
 
 
@@ -118,17 +118,17 @@ def delete_movie(db: Session, movie_id: int) -> dict:
             db.delete(db_movie)
             db.commit()
             return {
-                'status': 'ok',
-                'msg'   : 'Filme removido com sucesso.',
-                'id'    : movie_id
+                'status' : 'ok',
+                'msg'    : 'Filme removido com sucesso.',
+                'id'     : movie_id
             }
         except SQLAlchemyError as e:
             db.rollback()
             return {
-                'status': 'erro',
-                'msg'   : 'Erro ao deletar filme.'
+                'status' : 'erro',
+                'msg'    : 'Erro ao deletar filme.'
             }
     return {
-        'status': 'empty',
-        'msg'   : 'Filme não encontrado.'
+        'status' : 'empty',
+        'msg'    : 'Filme não encontrado.'
     }

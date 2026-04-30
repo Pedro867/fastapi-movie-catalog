@@ -22,8 +22,8 @@ def read_movies(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 
     if retorno['status'] == 'empty':
         return {
-            'status': 'ok',
-            'data'  : []
+            'status' : 'ok',
+            'data'   : []
         }
 
     return retorno
