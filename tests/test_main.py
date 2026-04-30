@@ -1,36 +1,8 @@
 import pytest
 import app.crud
 from unittest.mock import patch
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from app.database import Base
-from app.main import app, get_db
 
-# Configuração do Banco de Dados de Teste (Em memória)
-SQLALCHEMY_DATABASE_URL = "sqlite:///./tests/test_db.db"
-engine                  = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal     = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-app.dependency_overrides[get_db] = override_get_db
-
-client = TestClient(app)
-
-@pytest.fixture(autouse=True)
-def setup_db():
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
-
-
-def test_create_movie():
+def test_create_movie(client):
     response = client.post(
         "/movies/",
         json={"titulo": "Inception", "diretor": "Christopher Nolan", "ano_lancamento": 2010, "genero": "Ficção Científica"}
@@ -40,7 +12,7 @@ def test_create_movie():
     assert "id" in response.json()
 
 
-def test_create_movie_internal_error():
+def test_create_movie_internal_error(client):
     error_mock = {
         'status': 'erro',
         'msg'   : 'Erro interno no banco de dados'
@@ -56,7 +28,7 @@ def test_create_movie_internal_error():
         assert response.json()["detail"] == "Erro interno no banco de dados"
 
 
-def test_read_one_movie():
+def test_read_one_movie(client):
     create_res = client.post("/movies/", json={"titulo": "The Matrix", "diretor": "Wachowskis", "ano_lancamento": 1999, "genero": "Sci-Fi"})
     movie_id   = create_res.json()["id"]
 
@@ -65,7 +37,7 @@ def test_read_one_movie():
     assert response.json()["data"]["titulo"] == "The Matrix"
 
 
-def test_read_all_movies():
+def test_read_all_movies(client):
     client.post("/movies/", json={"titulo": "M1", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
     client.post("/movies/", json={"titulo": "M2", "diretor": "D2", "ano_lancamento": 2001, "genero": "G2"})
 
@@ -74,18 +46,18 @@ def test_read_all_movies():
     assert len(response.json()["data"]) == 2
 
 
-def test_read_all_movies_empty():
+def test_read_all_movies_empty(client):
     response = client.get("/movies/")
     assert response.status_code    == 200
     assert response.json()["data"] == []
 
 
-def test_read_one_movie_not_found():
+def test_read_one_movie_not_found(client):
     response = client.get("/movies/999")
     assert response.status_code == 404
 
 
-def test_update_movie_put():
+def test_update_movie_put(client):
     create_res = client.post("/movies/", json={"titulo": "Old Title", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
     movie_id   = create_res.json()["id"]
 
@@ -98,12 +70,12 @@ def test_update_movie_put():
     assert check.json()["data"]["titulo"] == "New Title"
 
 
-def test_update_put_non_existent_movie():
+def test_update_put_non_existent_movie(client):
     response = client.put("/movies/9999", json={"titulo": "New Title", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
     assert response.status_code == 404
 
 
-def test_update_put_internal_error():
+def test_update_put_internal_error(client):
     error_mock = {
         'status': 'erro',
         'msg'   : 'Erro interno no banco de dados'
@@ -119,7 +91,7 @@ def test_update_put_internal_error():
         assert response.json()["detail"] == "Erro interno no banco de dados"
 
 
-def test_delete_movie():
+def test_delete_movie(client):
     create_res = client.post("/movies/", json={"titulo": "To Delete", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
     movie_id   = create_res.json()["id"]
 
@@ -130,12 +102,12 @@ def test_delete_movie():
     assert check.status_code == 404
 
 
-def test_delete_non_existent_movie():
+def test_delete_non_existent_movie(client):
     response = client.delete("/movies/9999")
     assert response.status_code == 404
 
 
-def test_delete_internal_error():
+def test_delete_internal_error(client):
     error_mock = {
         'status': 'erro',
         'msg'   : 'Erro interno no banco de dados'
@@ -148,7 +120,7 @@ def test_delete_internal_error():
         assert response.json()["detail"] == "Erro interno no banco de dados"
 
 
-def test_update_movie_patch():
+def test_update_movie_patch(client):
     create_res = client.post("/movies/", json={"titulo": "Old Title", "diretor": "D1", "ano_lancamento": 2000, "genero": "G1"})
     movie_id   = create_res.json()["id"]
 
@@ -162,12 +134,12 @@ def test_update_movie_patch():
     assert check.json()["data"]["diretor"] == "D1"
 
 
-def test_update_patch_non_existent_movie():
+def test_update_patch_non_existent_movie(client):
     response = client.patch("/movies/9999", json={"titulo": "New Title"})
     assert response.status_code == 404
 
 
-def test_update_patch_internal_error():
+def test_update_patch_internal_error(client):
     error_mock = {
         'status': 'erro',
         'msg'   : 'Erro interno no banco de dados'
