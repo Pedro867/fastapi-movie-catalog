@@ -110,9 +110,10 @@ pytest
 Os testes cobrem:
 - **Criação** (POST) e validação de schemas Pydantic.
 - **Listagem** e leitura de itens específicos (GET).
-- **Atualização** (PUT).
+- **Atualização** (PUT e PATCH).
 - **Remoção** (DELETE).
 - **Tratamento de Erros**, validando o retorno de Status Codes apropriados (ex: `404 Not Found` ao buscar um ID inexistente).
+- **Testes de Integração (End-to-End)**, validando o ciclo de vida completo de um recurso e cenários negativos (dados inválidos, IDs inexistentes).
 
 ## 📁 Estrutura do Projeto
 
