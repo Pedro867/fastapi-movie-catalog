@@ -97,8 +97,7 @@ def test_update_movie_put(client):
         "ano_lancamento" : 2000,
         "genero"         : "G1"
     }
-    response       = client.put(f"/movies/{movie_id}", json=update_payload)
-
+    response = client.put(f"/movies/{movie_id}", json=update_payload)
     assert response.status_code == 200
 
     check = client.get(f"/movies/{movie_id}")
@@ -177,10 +176,8 @@ def test_update_movie_patch(client):
         "ano_lancamento" : 2000,
         "genero"         : "G1"
     })
-    movie_id   = create_res.json()["id"]
-
-    patch_payload = {"titulo" : "Patched Title"}
-    response      = client.patch(f"/movies/{movie_id}", json=patch_payload)
+    movie_id = create_res.json()["id"]
+    response = client.patch(f"/movies/{movie_id}", json={"titulo" : "Patched Title"})
 
     assert response.status_code == 200
 
@@ -201,10 +198,7 @@ def test_update_patch_internal_error(client):
     }
 
     with patch("app.crud.patch_movie", return_value=error_mock):
-        response = client.patch(
-            "/movies/9999",
-            json={"titulo" : "Erro"}
-        )
+        response = client.patch("/movies/9999", json={"titulo" : "Erro"})
 
         assert response.status_code      == 500
         assert response.json()["detail"] == "Erro interno no banco de dados"
