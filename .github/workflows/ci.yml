@@ -25,5 +25,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Executar os testes com Pytest
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           pytest
