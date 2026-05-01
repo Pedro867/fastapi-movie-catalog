@@ -4,8 +4,6 @@ from sqlalchemy.orm import Session
 from app import models, schemas, crud
 from app.database import SessionLocal, engine
 
-models.Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
 
 def get_db(): # pragma: no cover
